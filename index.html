@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fran Alcazar — Zero Waste Designer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Mono:wght@300;400&family=Bebas+Neue&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ─── RESET & ROOT ─────────────────────────────────── */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  /* Practice world — light editorial */
+  --p-bg:     #f5f2eb;
+  --p-bg2:    #ede9e0;
+  --p-ink:    #1a1810;
+  --p-mid:    #7a7268;
+  --p-border: #ddd9d0;
+  --p-burn:   #c8401a;  /* editorial accent */
+
+  /* Rewear world — bold dark */
+  --r-bg:     #0e0e0b;
+  --r-bg2:    #161612;
+  --r-ink:    #faf8f3;
+  --r-mid:    rgba(250,248,243,.45);
+  --r-border: rgba(255,255,255,.1);
+  --r-lime:   #b5e800;  /* rewear accent */
+  --r-pink:   #ff1f8f;
+  --r-blue:   #1a7fff;
+
+  --nav-h: 64px;
+}
+
+html { scroll-behavior: smooth; font-size: 16px; }
+body { background: var(--p-bg); color: var(--p-ink); font-family: 'DM Mono', monospace; overflow-x: hidden; cursor: none; }
+
+/* NOISE */
+body::after { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9000; }
+
+/* ─── CURSOR ──────────────────────────────────────── */
+.cursor { width:8px; height:8px; border-radius:50%; position:fixed; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); transition:width .15s, height .15s, background .4s; }
+.cursor-ring { width:32px; height:32px; border-radius:50%; position:fixed; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); transition:width .2s, height .2s, border-color .4s; }
+body.world-practice .cursor { background: var(--p-burn); }
+body.world-practice .cursor-ring { border: 1px solid var(--p-ink); }
+body.world-rewear .cursor { background: var(--r-lime); }
+body.world-rewear .cursor-ring { border: 1px solid var(--r-lime); }
+
+/* ─── NAV ──────────────────────────────────────────── */
+nav {
+  position: fixed; top:0; left:0; right:0; z-index:800;
+  height: var(--nav-h);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 48px;
+  transition: background .5s, border-color .5s;
+}
+nav.on-practice {
+  background: rgba(245,242,235,.94);
+  border-bottom: 1px solid var(--p-border);
+  backdrop-filter: blur(12px);
+}
+nav.on-rewear {
+  background: rgba(14,14,11,.94);
+  border-bottom: 1px solid var(--r-border);
+  backdrop-filter: blur(12px);
+}
+
+.nav-logo { text-decoration:none; display:flex; flex-direction:column; gap:2px; }
+.nav-logo-main { font-family:'Bebas Neue',sans-serif; font-size:19px; letter-spacing:.15em; transition:color .4s; }
+nav.on-practice .nav-logo-main { color: var(--p-ink); }
+nav.on-rewear   .nav-logo-main { color: var(--r-ink); }
+.nav-logo-sub { font-size:7px; letter-spacing:.35em; text-transform:uppercase; transition:color .4s; }
+nav.on-practice .nav-logo-sub { color: var(--p-mid); }
+nav.on-rewear   .nav-logo-sub { color: rgba(250,248,243,.4); }
+
+.nav-links { display:flex; gap:32px; list-style:none; align-items:center; }
+.nav-links a { font-size:8px; letter-spacing:.25em; text-transform:uppercase; text-decoration:none; transition:color .3s; position:relative; }
+.nav-links a::after { content:''; position:absolute; bottom:-2px; left:0; width:0; height:1px; transition:width .25s; }
+nav.on-practice .nav-links a { color: var(--p-ink); }
+nav.on-practice .nav-links a::after { background: var(--p-burn); }
+nav.on-practice .nav-links a:hover { color: var(--p-burn); }
+nav.on-practice .nav-links a:hover::after { width: 100%; }
+nav.on-rewear .nav-links a { color: rgba(250,248,243,.5); }
+nav.on-rewear .nav-links a::after { background: var(--r-lime); }
+nav.on-rewear .nav-links a:hover { color: var(--r-ink); }
+nav.on-rewear .nav-links a:hover::after { width: 100%; }
+
+.nav-cta {
+  font-size:8px; letter-spacing:.22em; text-transform:uppercase;
+  text-decoration:none; padding:9px 18px; transition:background .3s, color .3s;
+}
+nav.on-practice .nav-cta { background: var(--p-ink); color: var(--p-bg); }
+nav.on-practice .nav-cta:hover { background: var(--p-burn); }
+nav.on-rewear .nav-cta { background: var(--r-lime); color: var(--r-bg); }
+nav.on-rewear .nav-cta:hover { background: #c8f135; }
+
+/* MOBILE NAV */
+.hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; padding:4px; }
+.hamburger span { width:22px; height:1.5px; transition:background .4s; }
+nav.on-practice .hamburger span { background: var(--p-ink); }
+nav.on-rewear   .hamburger span { background: var(--r-ink); }
+.mobile-menu { display:none; position:fixed; inset:0; z-index:799; flex-direction:column; justify-content:center; align-items:center; gap:32px; transition:background .4s; }
+.mobile-menu.open { display:flex; }
+.mobile-menu.practice-m { background: var(--p-bg); }
+.mobile-menu.rewear-m   { background: var(--r-bg); }
+.mobile-menu a { font-size:28px; letter-spacing:.1em; text-transform:uppercase; text-decoration:none; font-family:'Bebas Neue',sans-serif; transition:color .2s; }
+.mobile-menu.practice-m a { color: var(--p-ink); }
+.mobile-menu.practice-m a:hover { color: var(--p-burn); }
+.mobile-menu.rewear-m a { color: var(--r-ink); }
+.mobile-menu.rewear-m a:hover { color: var(--r-lime); }
+.mobile-close { position:absolute; top:24px; right:24px; font-size:24px; cursor:pointer; }
+.mobile-menu.practice-m .mobile-close { color: var(--p-ink); }
+.mobile-menu.rewear-m   .mobile-close { color: var(--r-ink); }
+
+/* ─── ANIMATIONS ────────────────────────────────────── */
+@keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+@keyframes scanLine { 0%{left:-100%} 100%{left:100%} }
+.reveal { opacity:0; transform:translateY(28px); transition:opacity .85s ease, transform .85s ease; }
+.reveal.visible { opacity:1; transform:translateY(0); }
+.reveal-delay-1 { transition-delay:.1s; }
+.reveal-delay-2 { transition-delay:.22s; }
+.reveal-delay-3 { transition-delay:.34s; }
+
+/* ─── TICKER ────────────────────────────────────────── */
+.ticker { overflow:hidden; padding:11px 0; }
+.ticker.practice-t { background: var(--p-ink); }
+.ticker.rewear-t { background: var(--r-lime); }
+.ticker-track { display:flex; width:max-content; animation:tickerScroll 28s linear infinite; }
+.ticker-item { font-size:8px; letter-spacing:.3em; text-transform:uppercase; white-space:nowrap; padding:0 32px; }
+.practice-t .ticker-item { color: var(--p-bg); }
+.practice-t .ticker-dot { color: var(--p-burn); margin:0 16px; }
+.rewear-t .ticker-item { color: var(--r-bg); font-family:'Nunito',sans-serif; font-weight:800; font-size:9px; }
+.rewear-t .ticker-dot { color: rgba(14,14,11,.4); margin:0 14px; }
+@keyframes tickerScroll { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+/* ═══════════════════════════════════════════
+   WORLD ONE — PRACTICE
+═══════════════════════════════════════════ */
+.world-practice { background: var(--p-bg); }
+
+/* PRACTICE HERO */
+.ph { min-height:100vh; display:grid; grid-template-columns:1fr 1fr; padding-top:var(--nav-h); position:relative; overflow:hidden; }
+.ph-left { padding:80px 48px; display:flex; flex-direction:column; justify-content:flex-end; position:relative; z-index:2; }
+.ph-eyebrow { font-size:7px; letter-spacing:.45em; text-transform:uppercase; color:var(--p-mid); margin-bottom:28px; opacity:0; animation:fadeUp .8s .3s forwards; }
+.ph-h1 { font-family:'Cormorant Garamond',serif; font-size:clamp(68px,8.5vw,120px); font-weight:300; line-height:.88; letter-spacing:-.02em; color:var(--p-ink); opacity:0; animation:fadeUp .9s .5s forwards; }
+.ph-h1 em { font-style:italic; color:var(--p-burn); }
+.ph-h1 strong { font-weight:600; -webkit-text-stroke:1px var(--p-ink); color:transparent; }
+.ph-sub { margin-top:32px; font-size:10px; line-height:2; color:var(--p-mid); max-width:360px; opacity:0; animation:fadeUp .9s .8s forwards; }
+.ph-cta-row { margin-top:44px; display:flex; gap:20px; align-items:center; opacity:0; animation:fadeUp .9s 1s forwards; }
+.btn-ink { background:var(--p-ink); color:var(--p-bg); font-family:'DM Mono',monospace; font-size:8px; letter-spacing:.25em; text-transform:uppercase; text-decoration:none; padding:14px 26px; transition:background .2s; }
+.btn-ink:hover { background:var(--p-burn); }
+.btn-ghost-p { font-size:8px; letter-spacing:.2em; text-transform:uppercase; text-decoration:none; color:var(--p-mid); border-bottom:1px solid var(--p-border); padding-bottom:2px; transition:color .2s, border-color .2s; }
+.btn-ghost-p:hover { color:var(--p-ink); border-color:var(--p-ink); }
+.ph-scroll { position:absolute; bottom:40px; left:48px; display:flex; align-items:center; gap:10px; opacity:0; animation:fadeUp .9s 1.3s forwards; z-index:3; }
+.ph-scroll-line { width:36px; height:1px; background:var(--p-mid); position:relative; overflow:hidden; }
+.ph-scroll-line::after { content:''; position:absolute; left:-100%; top:0; width:100%; height:100%; background:var(--p-burn); animation:scanLine 2.5s ease-in-out infinite; }
+.ph-scroll-text { font-size:6px; letter-spacing:.4em; text-transform:uppercase; color:var(--p-mid); }
+
+.ph-right { position:relative; overflow:hidden; }
+.ph-imgs { position:absolute; inset:0; display:grid; grid-template-rows:62fr 38fr; gap:2px; }
+.ph-img { overflow:hidden; background:var(--p-p-border); position:relative; }
+.ph-img img { width:100%; height:100%; object-fit:cover; filter:grayscale(10%) contrast(1.05); transition:transform .8s ease, filter .4s; display:block; }
+.ph-img:hover img { transform:scale(1.04); filter:grayscale(0%); }
+.ph-img-cap { position:absolute; bottom:14px; left:14px; font-size:6px; letter-spacing:.3em; text-transform:uppercase; color:var(--p-bg); background:rgba(26,24,16,.55); padding:4px 8px; backdrop-filter:blur(4px); }
+
+/* WORK SECTION */
+.section-p { padding:100px 48px; background:var(--p-bg); }
+.section-p-alt { padding:100px 48px; background:var(--p-bg2); }
+.sec-hd { display:flex; justify-content:space-between; align-items:flex-end; border-bottom:1px solid var(--p-border); padding-bottom:20px; margin-bottom:52px; }
+.sec-title-p { font-family:'Bebas Neue',sans-serif; font-size:52px; letter-spacing:.04em; line-height:1; color:var(--p-ink); }
+.sec-num { font-size:8px; letter-spacing:.3em; color:var(--p-mid); }
+
+.work-grid { display:grid; grid-template-columns:2fr 1fr 1fr; grid-template-rows:320px 220px; gap:3px; }
+.wi { position:relative; overflow:hidden; background:var(--p-border); }
+.wi:first-child { grid-row:1/3; }
+.wi img { width:100%; height:100%; object-fit:cover; display:block; filter:grayscale(12%); transition:transform .65s, filter .35s; }
+.wi:hover img { transform:scale(1.05); filter:grayscale(0%); }
+.wi-overlay { position:absolute; inset:0; background:linear-gradient(to top,rgba(26,24,16,.88) 0%,transparent 50%); opacity:0; transition:opacity .3s; display:flex; align-items:flex-end; padding:22px; }
+.wi:hover .wi-overlay { opacity:1; }
+.wi-info h3 { font-family:'Cormorant Garamond',serif; font-size:20px; font-weight:600; color:var(--p-bg); line-height:1.1; }
+.wi-info p { font-size:7px; letter-spacing:.25em; text-transform:uppercase; color:rgba(245,242,235,.6); margin-top:5px; }
+.wi-tag { position:absolute; top:14px; left:14px; font-size:6px; letter-spacing:.25em; text-transform:uppercase; background:var(--p-bg); color:var(--p-ink); padding:3px 7px; }
+
+/* ABOUT — PRACTICE */
+.about-practice { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; }
+.ap-label { font-size:7px; letter-spacing:.4em; text-transform:uppercase; color:var(--p-burn); margin-bottom:24px; }
+.ap-h2 { font-family:'Cormorant Garamond',serif; font-size:clamp(36px,4vw,58px); font-weight:300; line-height:1.05; color:var(--p-ink); }
+.ap-h2 em { font-style:italic; color:var(--p-burn); font-weight:400; }
+.ap-rule { width:36px; height:2px; background:var(--p-burn); margin:24px 0; }
+.ap-body { font-size:10px; line-height:2; color:var(--p-mid); max-width:440px; }
+.ap-stats { margin-top:44px; display:grid; grid-template-columns:1fr 1fr; gap:28px; }
+.stat-n { font-family:'Cormorant Garamond',serif; font-size:52px; font-weight:300; color:var(--p-ink); line-height:1; }
+.stat-l { font-size:7px; letter-spacing:.3em; text-transform:uppercase; color:var(--p-mid); margin-top:3px; }
+.ap-img-wrap { position:relative; }
+.ap-img-main { width:100%; aspect-ratio:3/4; object-fit:cover; filter:grayscale(10%) contrast(1.08); display:block; }
+.ap-img-accent { position:absolute; bottom:-28px; right:-28px; width:50%; aspect-ratio:1; object-fit:cover; border:4px solid var(--p-bg); }
+
+/* COLLABS */
+.collab-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:3px; }
+.ci { position:relative; overflow:hidden; background:var(--p-border); aspect-ratio:4/5; }
+.ci img { width:100%; height:100%; object-fit:cover; filter:grayscale(18%) contrast(1.05); transition:transform .7s, filter .4s; display:block; }
+.ci:hover img { transform:scale(1.06); filter:grayscale(0%); }
+.ci-overlay { position:absolute; inset:0; background:linear-gradient(to top,rgba(26,24,16,.9) 0%,transparent 55%); display:flex; flex-direction:column; justify-content:flex-end; padding:24px; }
+.ci-partner { font-size:6px; letter-spacing:.35em; text-transform:uppercase; color:var(--p-burn); margin-bottom:5px; }
+.ci-title { font-family:'Cormorant Garamond',serif; font-size:20px; font-weight:600; color:var(--p-bg); line-height:1.1; }
+.ci-sub { font-size:7px; letter-spacing:.2em; color:rgba(245,242,235,.5); margin-top:7px; }
+
+/* PRESS */
+.press-grid { display:flex; flex-direction:column; gap:0; }
+.press-item { display:flex; align-items:center; gap:28px; padding:24px 0; border-bottom:1px solid var(--p-border); cursor:pointer; text-decoration:none; transition:background .2s; }
+.press-item:first-child { border-top:1px solid var(--p-border); }
+.press-item:hover .press-arrow { color:var(--p-burn); }
+.press-pub { font-size:7px; letter-spacing:.3em; text-transform:uppercase; color:var(--p-burn); width:100px; flex-shrink:0; }
+.press-title { flex:1; font-family:'Cormorant Garamond',serif; font-size:18px; font-weight:400; color:var(--p-ink); line-height:1.3; }
+.press-date { font-size:8px; color:var(--p-mid); width:70px; text-align:right; flex-shrink:0; }
+.press-arrow { font-size:18px; color:var(--p-mid); flex-shrink:0; transition:color .2s, transform .2s; }
+.press-item:hover .press-arrow { transform:translate(3px,-3px); }
+
+/* SHOP STRIP */
+.shop-strip { background:var(--p-burn); padding:56px 48px; display:flex; justify-content:space-between; align-items:center; gap:32px; }
+.shop-strip-text h3 { font-family:'Cormorant Garamond',serif; font-size:clamp(26px,3.5vw,44px); font-weight:400; color:var(--p-bg); line-height:1.05; }
+.shop-strip-text h3 em { font-style:italic; }
+.shop-strip-text p { font-size:9px; letter-spacing:.1em; color:rgba(245,242,235,.65); margin-top:10px; }
+.btn-white { background:var(--p-bg); color:var(--p-ink); font-family:'DM Mono',monospace; font-size:8px; letter-spacing:.25em; text-transform:uppercase; text-decoration:none; padding:14px 28px; white-space:nowrap; transition:background .2s; }
+.btn-white:hover { background:#fff; }
+
+/* ─── WORLD DIVIDER ────────────────────────────────── */
+.divider-world { height:100vh; background:var(--p-ink); display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; }
+.dw-bg-num { position:absolute; font-family:'Bebas Neue',sans-serif; font-size:380px; color:rgba(255,255,255,.02); top:50%; left:50%; transform:translate(-50%,-48%); pointer-events:none; line-height:1; }
+.dw-inner { position:relative; z-index:2; text-align:center; }
+.dw-top { font-family:'Cormorant Garamond',serif; font-size:clamp(52px,9vw,120px); font-weight:300; color:var(--p-bg); line-height:1; letter-spacing:-.02em; }
+.dw-line { width:100%; height:2px; background:var(--p-burn); position:relative; overflow:hidden; margin:8px 0; }
+.dw-line::after { content:''; position:absolute; left:-100%; top:0; width:100%; height:100%; background:var(--r-lime); animation:scanLine 3s ease-in-out infinite; }
+.dw-bottom { font-family:'Bebas Neue',sans-serif; font-size:clamp(52px,9vw,120px); color:var(--r-lime); letter-spacing:.05em; line-height:1; }
+.dw-label { margin-top:48px; font-size:8px; letter-spacing:.4em; text-transform:uppercase; color:rgba(245,242,235,.3); display:flex; align-items:center; gap:12px; justify-content:center; }
+.dw-label::before, .dw-label::after { content:''; width:28px; height:1px; background:rgba(245,242,235,.2); }
+
+/* ═══════════════════════════════════════════
+   WORLD TWO — REWEAR
+═══════════════════════════════════════════ */
+.world-rewear { background: var(--r-bg); }
+
+/* REWEAR HERO */
+.rh { min-height:100vh; display:grid; grid-template-columns:1fr 1fr; padding-top:var(--nav-h); position:relative; overflow:hidden; background:var(--r-bg); }
+.rh::before { content:''; position:absolute; inset:0; background-image:linear-gradient(rgba(181,232,0,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(181,232,0,.04) 1px,transparent 1px); background-size:56px 56px; pointer-events:none; z-index:0; }
+
+.rh-left { padding:80px 48px; display:flex; flex-direction:column; justify-content:flex-end; position:relative; z-index:2; }
+.rh-badge { display:inline-flex; align-items:center; gap:8px; background:rgba(181,232,0,.1); border:1px solid rgba(181,232,0,.25); padding:6px 14px; margin-bottom:28px; width:fit-content; opacity:0; animation:fadeUp .8s .2s forwards; }
+.rh-badge-dot { width:5px; height:5px; background:var(--r-lime); border-radius:50%; animation:pulseDot 2s ease-in-out infinite; }
+@keyframes pulseDot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.3;transform:scale(.6)} }
+.rh-badge span { font-size:7px; letter-spacing:.35em; text-transform:uppercase; color:var(--r-lime); font-family:'Nunito',sans-serif; font-weight:800; }
+.rh-h1 { font-family:'Cormorant Garamond',serif; font-size:clamp(68px,8.5vw,120px); font-weight:300; line-height:.88; letter-spacing:-.02em; color:var(--r-ink); opacity:0; animation:fadeUp .9s .4s forwards; }
+.rh-h1 em { font-style:italic; color:var(--r-lime); }
+.rh-h1 strong { font-weight:300; -webkit-text-stroke:1px rgba(250,248,243,.3); color:transparent; }
+.rh-sub { margin-top:32px; font-size:10px; line-height:2; color:var(--r-mid); max-width:380px; font-family:'DM Mono',monospace; opacity:0; animation:fadeUp .9s .7s forwards; }
+.rh-cta { margin-top:44px; display:flex; gap:20px; align-items:center; opacity:0; animation:fadeUp .9s .9s forwards; }
+.btn-lime { background:var(--r-lime); color:var(--r-bg); font-family:'Nunito',sans-serif; font-size:9px; font-weight:900; letter-spacing:.18em; text-transform:uppercase; text-decoration:none; padding:14px 26px; transition:background .2s; }
+.btn-lime:hover { background:#c8f135; }
+.btn-ghost-r { font-size:8px; letter-spacing:.2em; text-transform:uppercase; text-decoration:none; color:rgba(250,248,243,.5); border-bottom:1px solid rgba(250,248,243,.2); padding-bottom:2px; transition:color .2s; }
+.btn-ghost-r:hover { color:var(--r-ink); }
+
+.rh-right { display:flex; align-items:center; justify-content:center; padding:80px 48px; position:relative; z-index:2; }
+
+/* PHONE */
+.phone { width:240px; background:var(--r-bg); border:1.5px solid rgba(181,232,0,.3); border-radius:38px; box-shadow:0 0 60px rgba(181,232,0,.12), 0 40px 80px rgba(0,0,0,.6); overflow:hidden; }
+.phone-screen { background:linear-gradient(160deg,#121a0d 0%,#0e0e0b 100%); padding:24px 14px 18px; min-height:460px; }
+.phone-notch { width:60px; height:4px; background:#1e2e18; border-radius:2px; margin:0 auto 18px; }
+.p-lbl { font-size:6px; letter-spacing:.4em; text-transform:uppercase; color:rgba(181,232,0,.45); margin-bottom:2px; font-family:'DM Mono',monospace; }
+.p-ttl { font-family:'Bebas Neue',sans-serif; font-size:22px; color:var(--r-ink); letter-spacing:.1em; margin-bottom:14px; }
+.p-card { background:rgba(255,255,255,.04); border:1px solid rgba(181,232,0,.18); border-radius:10px; padding:10px 12px; margin-bottom:7px; }
+.p-card-l { font-size:6px; letter-spacing:.3em; text-transform:uppercase; color:rgba(181,232,0,.45); margin-bottom:4px; font-family:'DM Mono',monospace; }
+.p-card-v { font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:600; color:var(--r-ink); }
+.p-card-d { font-size:7px; color:var(--r-lime); margin-top:1px; font-family:'DM Mono',monospace; }
+.p-bar-row { display:flex; align-items:center; gap:7px; margin-top:7px; }
+.p-bar-lbl { font-size:6px; color:rgba(181,232,0,.45); width:48px; font-family:'DM Mono',monospace; flex-shrink:0; }
+.p-bar-t { flex:1; height:3px; background:rgba(255,255,255,.07); border-radius:2px; overflow:hidden; }
+.p-bar-f { height:100%; background:var(--r-lime); border-radius:2px; }
+.p-tags { display:flex; gap:5px; flex-wrap:wrap; margin-top:12px; }
+.p-tag { font-size:6px; letter-spacing:.15em; text-transform:uppercase; background:rgba(181,232,0,.1); color:var(--r-lime); border:1px solid rgba(181,232,0,.22); padding:3px 7px; border-radius:20px; font-family:'DM Mono',monospace; }
+
+/* REWEAR FEATURES */
+.section-r { padding:100px 48px; background:var(--r-bg); }
+.section-r-alt { padding:100px 48px; background:var(--r-bg2); }
+.sec-hd-r { display:flex; justify-content:space-between; align-items:flex-end; border-bottom:1px solid var(--r-border); padding-bottom:20px; margin-bottom:52px; }
+.sec-title-r { font-family:'Bebas Neue',sans-serif; font-size:52px; letter-spacing:.04em; line-height:1; color:var(--r-ink); }
+.sec-num-r { font-size:8px; letter-spacing:.3em; color:rgba(250,248,243,.3); }
+
+.features-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:2px; }
+.fg-item { background:rgba(255,255,255,.03); border:1px solid var(--r-border); padding:32px 24px; transition:background .3s, border-color .3s; }
+.fg-item:hover { background:rgba(181,232,0,.06); border-color:rgba(181,232,0,.25); }
+.fg-num { font-family:'Bebas Neue',sans-serif; font-size:44px; color:var(--r-lime); line-height:1; margin-bottom:14px; }
+.fg-title { font-size:9px; letter-spacing:.2em; text-transform:uppercase; color:var(--r-ink); margin-bottom:10px; }
+.fg-desc { font-size:9px; line-height:1.9; color:rgba(250,248,243,.4); }
+
+/* REWEAR ABOUT */
+.rw-about { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; }
+.rwa-label { font-size:7px; letter-spacing:.4em; text-transform:uppercase; color:var(--r-lime); margin-bottom:24px; }
+.rwa-h2 { font-family:'Cormorant Garamond',serif; font-size:clamp(36px,4vw,58px); font-weight:300; line-height:1.05; color:var(--r-ink); }
+.rwa-h2 em { font-style:italic; color:var(--r-lime); }
+.rwa-rule { width:36px; height:2px; background:var(--r-lime); margin:24px 0; }
+.rwa-body { font-size:10px; line-height:2; color:var(--r-mid); max-width:440px; }
+.tech-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.tech-item { background:rgba(255,255,255,.03); border:1px solid var(--r-border); padding:18px; transition:border-color .3s; }
+.tech-item:hover { border-color:rgba(181,232,0,.3); }
+.tech-lbl { font-size:6px; letter-spacing:.35em; text-transform:uppercase; color:var(--r-lime); margin-bottom:5px; }
+.tech-val { font-size:11px; color:var(--r-ink); }
+
+/* REWEAR CTA */
+.rw-cta { background:var(--r-lime); padding:80px 48px; display:flex; justify-content:space-between; align-items:center; gap:32px; }
+.rw-cta-text h3 { font-family:'Cormorant Garamond',serif; font-size:clamp(28px,4vw,52px); font-weight:400; color:var(--r-bg); line-height:1.05; }
+.rw-cta-text h3 em { font-style:italic; }
+.rw-cta-text p { font-size:9px; letter-spacing:.08em; color:rgba(14,14,11,.55); margin-top:10px; }
+.btn-dark { background:var(--r-bg); color:var(--r-lime); font-family:'Nunito',sans-serif; font-size:9px; font-weight:900; letter-spacing:.18em; text-transform:uppercase; text-decoration:none; padding:14px 28px; white-space:nowrap; transition:background .2s; }
+.btn-dark:hover { background:#1a1a14; }
+
+/* ─── CONTACT ──────────────────────────────────────── */
+.contact-section { background:var(--p-ink); padding:100px 48px; }
+.contact-grid { display:grid; grid-template-columns:1fr 1fr; gap:80px; }
+.contact-left {}
+.cl-label { font-size:7px; letter-spacing:.4em; text-transform:uppercase; color:var(--p-burn); margin-bottom:20px; }
+.cl-h2 { font-family:'Cormorant Garamond',serif; font-size:clamp(40px,5vw,72px); font-weight:300; line-height:.95; color:var(--p-bg); }
+.cl-h2 em { font-style:italic; color:var(--p-burn); }
+.cl-sub { margin-top:24px; font-size:10px; line-height:2; color:rgba(245,242,235,.5); max-width:400px; }
+.contact-form { display:flex; flex-direction:column; gap:14px; margin-top:40px; }
+.cf-field { display:flex; flex-direction:column; gap:6px; }
+.cf-label { font-size:7px; letter-spacing:.3em; text-transform:uppercase; color:rgba(245,242,235,.4); }
+.cf-input { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); padding:13px 16px; font-family:'DM Mono',monospace; font-size:10px; color:var(--p-bg); outline:none; transition:border-color .2s; }
+.cf-input::placeholder { color:rgba(245,242,235,.25); }
+.cf-input:focus { border-color:var(--p-burn); }
+.cf-textarea { resize:vertical; min-height:100px; }
+.cf-submit { background:var(--p-burn); color:var(--p-bg); font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.25em; text-transform:uppercase; border:none; padding:15px 28px; cursor:pointer; align-self:flex-start; transition:background .2s; }
+.cf-submit:hover { background:#e05a30; }
+
+.contact-right {}
+.cr-info { display:flex; flex-direction:column; gap:32px; margin-top:8px; }
+.cr-item {}
+.cr-item-label { font-size:7px; letter-spacing:.35em; text-transform:uppercase; color:rgba(245,242,235,.35); margin-bottom:6px; }
+.cr-item-value { font-size:12px; color:var(--p-bg); line-height:1.7; }
+.cr-item-value a { color:var(--p-burn); text-decoration:none; transition:color .2s; }
+.cr-item-value a:hover { color:#e87050; }
+.cr-social { display:flex; gap:12px; margin-top:32px; flex-wrap:wrap; }
+.cr-social-link { font-size:8px; letter-spacing:.2em; text-transform:uppercase; text-decoration:none; color:rgba(245,242,235,.5); border:1px solid rgba(255,255,255,.12); padding:9px 16px; transition:all .2s; }
+.cr-social-link:hover { border-color:var(--p-burn); color:var(--p-burn); }
+
+/* ─── FOOTER ────────────────────────────────────────── */
+footer { background:#050504; padding:60px 48px 32px; }
+.ft-top { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:48px; padding-bottom:48px; border-bottom:1px solid rgba(255,255,255,.06); }
+.ft-logo { font-family:'Bebas Neue',sans-serif; font-size:40px; letter-spacing:.05em; color:var(--r-ink); line-height:1; margin-bottom:10px; }
+.ft-tagline { font-size:9px; line-height:1.9; color:rgba(250,248,243,.35); max-width:240px; }
+.ft-col-title { font-size:6px; letter-spacing:.45em; text-transform:uppercase; color:rgba(250,248,243,.3); margin-bottom:16px; }
+.ft-links { list-style:none; }
+.ft-links li { margin-bottom:9px; }
+.ft-links a { font-size:9.5px; color:rgba(250,248,243,.4); text-decoration:none; transition:color .2s; }
+.ft-links a:hover { color:var(--r-lime); }
+.ft-bottom { padding-top:24px; display:flex; justify-content:space-between; align-items:center; }
+.ft-copy { font-size:7px; letter-spacing:.2em; color:rgba(250,248,243,.25); }
+.ft-cities { font-size:7px; letter-spacing:.3em; color:rgba(250,248,243,.25); }
+
+/* ─── RESPONSIVE / MOBILE ────────────────────────────── */
+@media(max-width:900px){
+  nav { padding:0 24px; }
+  .nav-links { display:none; }
+  .nav-cta { display:none; }
+  .hamburger { display:flex; }
+
+  .ph, .rh { grid-template-columns:1fr; }
+  .ph-right, .rh-right { display:none; }
+  .ph-left, .rh-left { padding:80px 24px 60px; min-height:90vh; justify-content:flex-end; }
+  .ph-h1, .rh-h1 { font-size:clamp(60px,14vw,80px); }
+
+  .section-p, .section-r { padding:72px 24px; }
+  .section-p-alt, .section-r-alt { padding:72px 24px; }
+
+  .work-grid { grid-template-columns:1fr 1fr; grid-template-rows:280px 220px 220px; }
+  .wi:first-child { grid-row:auto; grid-column:1/3; }
+
+  .about-practice, .rw-about { grid-template-columns:1fr; gap:48px; }
+  .ap-img-wrap { display:none; }
+  .ap-img-accent { display:none; }
+
+  .collab-grid { grid-template-columns:1fr 1fr; }
+
+  .features-grid { grid-template-columns:1fr 1fr; gap:8px; }
+
+  .contact-grid { grid-template-columns:1fr; gap:48px; }
+  .contact-section { padding:72px 24px; }
+
+  .shop-strip, .rw-cta { flex-direction:column; gap:24px; padding:48px 24px; text-align:center; }
+
+  .press-item { flex-wrap:wrap; gap:12px; }
+  .press-date { display:none; }
+
+  .ft-top { grid-template-columns:1fr 1fr; gap:32px; }
+  footer { padding:48px 24px 28px; }
+
+  .dw-top, .dw-bottom { font-size:clamp(40px,12vw,72px); }
+
+  .tech-grid { grid-template-columns:1fr; }
+
+  .rh-right { display:flex; padding:40px 24px; }
+
+  .sec-hd, .sec-hd-r { margin-bottom:32px; }
+  .sec-title-p, .sec-title-r { font-size:40px; }
+}
+
+@media(max-width:480px){
+  .collab-grid { grid-template-columns:1fr; }
+  .work-grid { grid-template-columns:1fr; grid-template-rows:auto; }
+  .wi:first-child { grid-column:auto; }
+  .wi { aspect-ratio:4/3; }
+  .features-grid { grid-template-columns:1fr; }
+  .ap-stats { grid-template-columns:1fr 1fr; }
+  .ft-top { grid-template-columns:1fr; }
+  .press-pub { display:none; }
+}
+</style>
+</head>
+<body class="world-practice">
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu practice-m" id="mobileMenu">
+  <span class="mobile-close" onclick="closeMobileMenu()">✕</span>
+  <a href="#work" onclick="closeMobileMenu()">Work</a>
+  <a href="#about" onclick="closeMobileMenu()">About</a>
+  <a href="#collabs" onclick="closeMobileMenu()">Collabs</a>
+  <a href="#press" onclick="closeMobileMenu()">Press</a>
+  <a href="#rewear" onclick="closeMobileMenu()">rewear</a>
+  <a href="#contact" onclick="closeMobileMenu()">Contact</a>
+</div>
+
+<!-- NAV -->
+<nav id="mainNav" class="on-practice">
+  <a href="#" class="nav-logo">
+    <span class="nav-logo-main">Fran Alcazar</span>
+    <span class="nav-logo-sub">Zero Waste Designer</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#work">Work</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#collabs">Collabs</a></li>
+    <li><a href="#press">Press</a></li>
+    <li><a href="#rewear">rewear</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Get in touch</a>
+  <div class="hamburger" onclick="openMobileMenu()" id="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════
+     WORLD ONE — THE PRACTICE
+══════════════════════════════ -->
+<div class="world-practice" id="practice-world">
+
+  <!-- HERO -->
+  <section class="ph" id="hero">
+    <div class="ph-left">
+      <p class="ph-eyebrow">Barcelona / London · Est. 2019</p>
+      <h1 class="ph-h1">
+        Zero<br>
+        <em>Waste</em><br>
+        <strong>Design</strong>
+      </h1>
+      <p class="ph-sub">One-of-a-kind garments and installations from discarded textiles, surplus materials, and found objects. Every piece holds the history of what it was.</p>
+      <div class="ph-cta-row">
+        <a href="#work" class="btn-ink">View Work</a>
+        <a href="https://www.franalcazar.com/shop" class="btn-ghost-p">Shop Pieces →</a>
+      </div>
+      <div class="ph-scroll">
+        <div class="ph-scroll-line"></div>
+        <span class="ph-scroll-text">Scroll</span>
+      </div>
+    </div>
+    <div class="ph-right">
+      <div class="ph-imgs">
+        <div class="ph-img">
+          <img src="https://images.squarespace-cdn.com/content/v1/5e7c29fc73a3461607cdae8c/1691721246786-3HY459ZEW6LNR0PS7YIH/_MG_4858.jpg" alt="Zero Waste Design">
+          <span class="ph-img-cap">Denim Collection</span>
+        </div>
+        <div class="ph-img">
+          <img src="https://images.squarespace-cdn.com/content/v1/5e7c29fc73a3461607cdae8c/cbc34e8d-c616-46ad-81f3-3817af20769a/IMG_9950.JPG" alt="Crochet">
+          <span class="ph-img-cap">Crochet Series</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TICKER -->
+  <div class="ticker practice-t">
+    <div class="ticker-track">
+      <span class="ticker-item">Zero Waste <span class="ticker-dot">✦</span></span>
+      <span class="ticker-item">Circular Economy <span class="ticker-dot">✦</span></span>
+      <span class="ticker-item">One of a Kind <span class="ticker-dot">✦</span></span>
+      <span class="ticker-item">Gender Free <span class="ticker-dot">✦</span></span>
+      <span class="ticker-item">Trend Free <span class="ticker-dot">✦</span></span>
+      <span class="ticker-item">Season Free <span class="ticker-dot">✦</span></span>
+      <span class="ticker-item">Upcycled <span class="ticker-dot">✦</span></span>
+      <span class="ticker-item">Zero Waste <span class="ticker-dot">✦</span></span>
+      <span class="ticker-item">Circular Economy <span class="ticker-dot">✦</span></span>
+      <span class="ticker-item">One of a Kind <span class="ticker-dot">✦</span></span>
+      <span class="ticker-item">Gender Free <span class="ticker-dot">✦</span></span>
+      <span class="ticker-item">Trend Free <span class="ticker-dot">✦</span></span>
+      <span class="ticker-item">Season Free <span class="ticker-dot">✦</span></span>
+      <span class="ticker-item">Upcycled <span class="ticker-dot">✦</span></span>
+    </div>
+  </div>
+
+  <!-- WORK -->
+  <section class="section-p" id="work">
+    <div class="sec-hd reveal">
+      <h2 class="sec-title-p">Selected Work</h2>
+      <span class="sec-num">01 / 05</span>
+    </div>
+    <div class="work-grid reveal">
+      <div class="wi">
+        <img src="https://images.squarespace-cdn.com/content/v1/5e7c29fc73a3461607cdae8c/1691721102625-2BFB1Z4C5LAT71PMRJ9U/_MG_4815.jpg" alt="Denim">
+        <span class="wi-tag">Denim</span>
+        <div class="wi-overlay"><div class="wi-info"><h3>Denim Project</h3><p>Upcycled · 2023</p></div></div>
+      </div>
+      <div class="wi">
+        <img src="https://images.squarespace-cdn.com/content/v1/5e7c29fc73a3461607cdae8c/1691721057103-ZP2UPHTQOGSQU1TICUIN/_MG_4768.jpg" alt="Crochet">
+        <span class="wi-tag">Crochet</span>
+        <div class="wi-overlay"><div class="wi-info"><h3>Crochet Series</h3><p>One of a Kind</p></div></div>
+      </div>
+      <div class="wi">
+        <img src="https://images.squarespace-cdn.com/content/v1/5e7c29fc73a3461607cdae8c/b5d6cca3-4269-4a03-addd-16d2967b9e01/IMG_2239.jpg" alt="Performance">
+        <span class="wi-tag">Performance</span>
+        <div class="wi-overlay"><div class="wi-info"><h3>Performance Series</h3><p>Costume · Installation</p></div></div>
+      </div>
+      <div class="wi">
+        <img src="https://images.squarespace-cdn.com/content/v1/5e7c29fc73a3461607cdae8c/1691720984330-3Y17I9M0WHCCQYZGO2B4/_MG_4701.jpg" alt="Waste Studies">
+        <span class="wi-tag">Zero Waste</span>
+        <div class="wi-overlay"><div class="wi-info"><h3>Waste Studies</h3><p>Material Research</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="section-p-alt" id="about">
+    <div class="about-practice reveal">
+      <div>
+        <p class="ap-label">02 / 05 — The Practice</p>
+        <h2 class="ap-h2">Structure<br>meets<br><em>surplus.</em></h2>
+        <div class="ap-rule"></div>
+        <p class="ap-body">
+          Trained as a structural engineer, now working at the intersection of fashion, performance, and installation. The practice is built on a single principle: materials have multiple lives, and the history of each piece matters as much as what it becomes next.<br><br>
+          Based between Barcelona and London. Every garment is zero waste by design. Clients include Legs On The Wall, Ace Hotel Sydney, and LA Design Week.
+        </p>
+        <div class="ap-stats">
+          <div><div class="stat-n">5+</div><div class="stat-l">Years of practice</div></div>
+          <div><div class="stat-n">0%</div><div class="stat-l">Fabric waste target</div></div>
+          <div><div class="stat-n">∞</div><div class="stat-l">Material lifecycles</div></div>
+          <div><div class="stat-n">2</div><div class="stat-l">Cities. One practice.</div></div>
+        </div>
+      </div>
+      <div class="ap-img-wrap reveal reveal-delay-2">
+        <img class="ap-img-main" src="https://images.squarespace-cdn.com/content/v1/5e7c29fc73a3461607cdae8c/1691720940649-VYDOUUS12NVPSTL0GC9D/_MG_4686.jpg" alt="Practice">
+        <img class="ap-img-accent" src="https://images.squarespace-cdn.com/content/v1/5e7c29fc73a3461607cdae8c/1691720903951-B40B11YVJD94Q0ECJWW4/_MG_4673.jpg" alt="Detail">
+      </div>
+    </div>
+  </section>
+
+  <!-- COLLABS -->
+  <section class="section-p" id="collabs">
+    <div class="sec-hd reveal">
+      <h2 class="sec-title-p">Collaborations</h2>
+      <span class="sec-num">03 / 05</span>
+    </div>
+    <div class="collab-grid reveal">
+      <div class="ci">
+        <img src="https://images.squarespace-cdn.com/content/v1/5e7c29fc73a3461607cdae8c/e1b43ed6-6d24-4f80-b353-f09096ab4aa0/IMG_2891.JPEG" alt="Ace Hotel">
+        <div class="ci-overlay">
+          <div class="ci-partner">Ace Hotel Sydney</div>
+          <div class="ci-title">Holiday Installations & Mardi Gras</div>
+          <div class="ci-sub">Ron Muncaster Award Winner</div>
+        </div>
+      </div>
+      <div class="ci">
+        <img src="https://images.squarespace-cdn.com/content/v1/5e7c29fc73a3461607cdae8c/b1c65c32-f7c5-43cb-9020-a30ff317ac3b/IMG_1834+%281%29.jpg" alt="Legs On The Wall">
+        <div class="ci-overlay">
+          <div class="ci-partner">Legs On The Wall</div>
+          <div class="ci-title">Lovers — World Pride Sydney</div>
+          <div class="ci-sub">Aerial Costumes · 2023</div>
+        </div>
+      </div>
+      <div class="ci">
+        <img src="https://images.squarespace-cdn.com/content/v1/5e7c29fc73a3461607cdae8c/1691721135849-AA0FWTAKPHMO6JW490WC/_MG_4819.jpg" alt="LA Design Week">
+        <div class="ci-overlay">
+          <div class="ci-partner">LA Design Week × HubbaHubba</div>
+          <div class="ci-title">The Chair You Wear</div>
+          <div class="ci-sub">Hybrid Object · Los Angeles</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRESS -->
+  <section class="section-p-alt" id="press">
+    <div class="sec-hd reveal">
+      <h2 class="sec-title-p">Press</h2>
+      <span class="sec-num">04 / 05</span>
+    </div>
+    <div class="press-grid reveal">
+      <a class="press-item" href="#" target="_blank">
+        <div class="press-pub">Vogue Australia</div>
+        <div class="press-title">The designers turning waste into wearable sculpture</div>
+        <div class="press-date">2024</div>
+        <div class="press-arrow">↗</div>
+      </a>
+      <a class="press-item" href="#" target="_blank">
+        <div class="press-pub">Dezeen</div>
+        <div class="press-title">Fran Alcazar's zero-waste practice challenges fashion's relationship with material</div>
+        <div class="press-date">2023</div>
+        <div class="press-arrow">↗</div>
+      </a>
+      <a class="press-item" href="#" target="_blank">
+        <div class="press-pub">Broadsheet Sydney</div>
+        <div class="press-title">Behind the Legs On The Wall World Pride costumes</div>
+        <div class="press-date">2023</div>
+        <div class="press-arrow">↗</div>
+      </a>
+      <a class="press-item" href="#" target="_blank">
+        <div class="press-pub">LA Times</div>
+        <div class="press-title">LA Design Week: The Chair You Wear blurs furniture and clothing</div>
+        <div class="press-date">2022</div>
+        <div class="press-arrow">↗</div>
+      </a>
+      <a class="press-item" href="#" target="_blank">
+        <div class="press-pub">Frankie Magazine</div>
+        <div class="press-title">Mardi Gras and the art of the costume</div>
+        <div class="press-date">2022</div>
+        <div class="press-arrow">↗</div>
+      </a>
+    </div>
+  </section>
+
+  <!-- SHOP STRIP -->
+  <div class="shop-strip reveal">
+    <div class="shop-strip-text">
+      <h3>One-of-a-kind<br><em>pieces, available now.</em></h3>
+      <p>Each garment is unique. Once it's gone, it's gone.</p>
+    </div>
+    <a href="https://www.franalcazar.com/shop" class="btn-white" target="_blank">Visit the Shop →</a>
+  </div>
+
+</div><!-- /world-practice -->
+
+<!-- ══════════════════════════════
+     WORLD DIVIDER
+══════════════════════════════ -->
+<div class="divider-world" id="world-divider">
+  <div class="dw-bg-num">2</div>
+  <div class="dw-inner reveal">
+    <div class="dw-top">The Practice</div>
+    <div class="dw-line"></div>
+    <div class="dw-bottom">rewear</div>
+    <div class="dw-label">Scroll to enter rewear</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     WORLD TWO — REWEAR
+══════════════════════════════ -->
+<div class="world-rewear" id="rewear-world">
+
+  <!-- REWEAR HERO -->
+  <section class="rh" id="rewear">
+    <div class="rh-left">
+      <div class="rh-badge">
+        <div class="rh-badge-dot"></div>
+        <span>Now Building — Join the Waitlist</span>
+      </div>
+      <h1 class="rh-h1">
+        Wear<br>
+        <em>less.</em><br>
+        <strong>Better.</strong>
+      </h1>
+      <p class="rh-sub">A circular wardrobe intelligence app. Understand the carbon footprint of what you own, discover your personal style, and build a wardrobe that actually lasts.</p>
+      <div class="rh-cta">
+        <a href="#contact" class="btn-lime">Join the Waitlist</a>
+        <a href="#rw-features" class="btn-ghost-r">Learn more →</a>
+      </div>
+    </div>
+    <div class="rh-right">
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="phone-notch"></div>
+          <div class="p-lbl">rewear · beta</div>
+          <div class="p-ttl">My Wardrobe</div>
+          <div class="p-card">
+            <div class="p-card-l">Carbon footprint · this month</div>
+            <div class="p-card-v">12.4 kg CO₂</div>
+            <div class="p-card-d">↓ 34% vs last month</div>
+          </div>
+          <div class="p-card">
+            <div class="p-card-l">Style profile</div>
+            <div class="p-bar-row"><span class="p-bar-lbl">Minimal</span><div class="p-bar-t"><div class="p-bar-f" style="width:72%"></div></div></div>
+            <div class="p-bar-row"><span class="p-bar-lbl">Editorial</span><div class="p-bar-t"><div class="p-bar-f" style="width:88%"></div></div></div>
+            <div class="p-bar-row"><span class="p-bar-lbl">Circular</span><div class="p-bar-t"><div class="p-bar-f" style="width:94%"></div></div></div>
+          </div>
+          <div class="p-card">
+            <div class="p-card-l">Wardrobe score</div>
+            <div class="p-card-v">87 <span style="font-size:11px;color:rgba(181,232,0,.45);">/ 100</span></div>
+            <div class="p-card-d">↑ Top 12% · Circular profile</div>
+          </div>
+          <div class="p-tags">
+            <span class="p-tag">Circular</span>
+            <span class="p-tag">Zero waste</span>
+            <span class="p-tag">Upcycled</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TICKER REWEAR -->
+  <div class="ticker rewear-t">
+    <div class="ticker-track">
+      <span class="ticker-item">Circular Wardrobe <span class="ticker-dot">✦</span></span>
+      <span class="ticker-item">Carbon Tracker <span class="ticker-dot">✦</span></span>
+      <span class="ticker-item">AI Style Analysis <span class="ticker-dot">✦</span></span>
+      <span class="ticker-item">Repair Not Replace <span class="ticker-dot">✦</span></span>
+      <span class="ticker-item">Social Challenges <span class="ticker-dot">✦</span></span>
+      <span class="ticker-item">By Fran Alcazar <span class="ticker-dot">✦</span></span>
+      <span class="ticker-item">Circular Wardrobe <span class="ticker-dot">✦</span></span>
+      <span class="ticker-item">Carbon Tracker <span class="ticker-dot">✦</span></span>
+      <span class="ticker-item">AI Style Analysis <span class="ticker-dot">✦</span></span>
+      <span class="ticker-item">Repair Not Replace <span class="ticker-dot">✦</span></span>
+      <span class="ticker-item">Social Challenges <span class="ticker-dot">✦</span></span>
+      <span class="ticker-item">By Fran Alcazar <span class="ticker-dot">✦</span></span>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <section class="section-r" id="rw-features">
+    <div class="sec-hd-r reveal">
+      <h2 class="sec-title-r">Core Features</h2>
+      <span class="sec-num-r">01 / 03</span>
+    </div>
+    <div class="features-grid">
+      <div class="fg-item reveal"><div class="fg-num">01</div><div class="fg-title">Carbon Tracker</div><div class="fg-desc">Analyse the footprint of every garment in your wardrobe. Understand the real cost of what you own.</div></div>
+      <div class="fg-item reveal reveal-delay-1"><div class="fg-num">02</div><div class="fg-title">Wardrobe AI</div><div class="fg-desc">Upload a photo. Claude identifies your garment, estimates its carbon, and suggests specific repair strategies.</div></div>
+      <div class="fg-item reveal reveal-delay-2"><div class="fg-num">03</div><div class="fg-title">Style Discovery</div><div class="fg-desc">Uncover your personal aesthetic through wear patterns, not trends. Dress with intention.</div></div>
+      <div class="fg-item reveal reveal-delay-3"><div class="fg-num">04</div><div class="fg-title">Social Challenges</div><div class="fg-desc">Compete with friends on circular scores. Weekly repair challenges keep sustainable fashion engaging.</div></div>
+    </div>
+  </section>
+
+  <!-- REWEAR ABOUT -->
+  <section class="section-r-alt">
+    <div class="rw-about reveal">
+      <div>
+        <p class="rwa-label">02 / 03 — The Story</p>
+        <h2 class="rwa-h2">Same principles.<br><em>Bigger</em> reach.</h2>
+        <div class="rwa-rule"></div>
+        <p class="rwa-body">rewear grew directly from the design practice — the same obsession with what materials are, where they come from, and how long they last. The difference is scale. A garment reaches one person. An app reaches everyone.<br><br>Built with React Native, Supabase, and a genuine belief that knowing more about what you own changes how you wear it.</p>
+      </div>
+      <div class="tech-grid reveal reveal-delay-2">
+        <div class="tech-item"><div class="tech-lbl">Frontend</div><div class="tech-val">React Native + Expo</div></div>
+        <div class="tech-item"><div class="tech-lbl">Backend</div><div class="tech-val">Node.js / Express</div></div>
+        <div class="tech-item"><div class="tech-lbl">Database</div><div class="tech-val">Supabase</div></div>
+        <div class="tech-item"><div class="tech-lbl">Hosting</div><div class="tech-val">Railway</div></div>
+        <div class="tech-item" style="grid-column:1/-1;"><div class="tech-lbl">Launch</div><div class="tech-val">2026 — Freemium model</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REWEAR CTA -->
+  <div class="rw-cta reveal">
+    <div class="rw-cta-text">
+      <h3>Be the first<br>to <em>rewear.</em></h3>
+      <p>Join the waitlist for early access.</p>
+    </div>
+    <a href="#contact" class="btn-dark">Join the Waitlist →</a>
+  </div>
+
+</div><!-- /world-rewear -->
+
+<!-- ══════════════════════════════
+     CONTACT
+══════════════════════════════ -->
+<div class="contact-section" id="contact">
+  <div class="contact-grid">
+    <div class="contact-left reveal">
+      <div class="cl-label">05 / 05 — Get in Touch</div>
+      <h2 class="cl-h2">Let's<br>work<br><em>together.</em></h2>
+      <p class="cl-sub">Open to collaborations, commissions, press enquiries, and conversations about rewear. Based in Barcelona and London.</p>
+      <form class="contact-form" onsubmit="handleForm(event)">
+        <div class="cf-field">
+          <label class="cf-label">Your name</label>
+          <input class="cf-input" type="text" placeholder="Name">
+        </div>
+        <div class="cf-field">
+          <label class="cf-label">Email</label>
+          <input class="cf-input" type="email" placeholder="email@example.com">
+        </div>
+        <div class="cf-field">
+          <label class="cf-label">What's this about?</label>
+          <select class="cf-input" style="cursor:pointer;appearance:none;-webkit-appearance:none;">
+            <option value="" disabled selected>Select a subject</option>
+            <option>Collaboration</option>
+            <option>Commission</option>
+            <option>Press enquiry</option>
+            <option>rewear waitlist</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="cf-field">
+          <label class="cf-label">Message</label>
+          <textarea class="cf-input cf-textarea" placeholder="Tell me about your project..."></textarea>
+        </div>
+        <button class="cf-submit" type="submit" id="formBtn">Send Message →</button>
+        <div id="formSuccess" style="display:none;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--p-burn);">✓ Message sent. I'll be in touch.</div>
+      </form>
+    </div>
+    <div class="contact-right reveal reveal-delay-2">
+      <div class="cr-info">
+        <div class="cr-item">
+          <div class="cr-item-label">Email</div>
+          <div class="cr-item-value"><a href="/cdn-cgi/l/email-protection#422a272e2e2d022430232c232e21233823306c212d2f"><span class="__cf_email__" data-cfemail="3159545d5d5e715743505f505d52504b50431f525e5c">[email&#160;protected]</span></a></div>
+        </div>
+        <div class="cr-item">
+          <div class="cr-item-label">Based in</div>
+          <div class="cr-item-value">Barcelona, Spain<br>London, UK</div>
+        </div>
+        <div class="cr-item">
+          <div class="cr-item-label">For press</div>
+          <div class="cr-item-value"><a href="/cdn-cgi/l/email-protection#403032253333002632212e212c23213a21326e232f2d"><span class="__cf_email__" data-cfemail="79090b1c0a0a391f0b181718151a1803180b571a1614">[email&#160;protected]</span></a></div>
+        </div>
+        <div class="cr-item">
+          <div class="cr-item-label">rewear app</div>
+          <div class="cr-item-value"><a href="#">getrewear.com ↗</a></div>
+        </div>
+      </div>
+      <div class="cr-social">
+        <a class="cr-social-link" href="#">Instagram</a>
+        <a class="cr-social-link" href="#">LinkedIn</a>
+        <a class="cr-social-link" href="#">Behance</a>
+        <a class="cr-social-link" href="#">Vimeo</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="ft-top">
+    <div>
+      <div class="ft-logo">Fran Alcazar</div>
+      <p class="ft-tagline">Zero waste fashion designer working between Barcelona and London. Every garment is a second life.</p>
+    </div>
+    <div>
+      <div class="ft-col-title">Practice</div>
+      <ul class="ft-links">
+        <li><a href="#work">Work</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#collabs">Collaborations</a></li>
+        <li><a href="#press">Press</a></li>
+        <li><a href="https://www.franalcazar.com/shop">Shop</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="ft-col-title">rewear</div>
+      <ul class="ft-links">
+        <li><a href="#rewear">Overview</a></li>
+        <li><a href="#rw-features">Features</a></li>
+        <li><a href="#contact">Join Waitlist</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="ft-col-title">Connect</div>
+      <ul class="ft-links">
+        <li><a href="#">Instagram</a></li>
+        <li><a href="#">LinkedIn</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="#contact">Press</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="ft-bottom">
+    <span class="ft-copy">© 2026 Fran Alcazar. All rights reserved.</span>
+    <span class="ft-cities">Barcelona ✦ London</span>
+  </div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// CURSOR
+const cursor   = document.getElementById('cursor');
+const ring     = document.getElementById('cursorRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove', e => {
+  mx=e.clientX; my=e.clientY;
+  cursor.style.left=mx+'px'; cursor.style.top=my+'px';
+});
+(function animRing(){
+  rx+=(mx-rx)*.12; ry+=(my-ry)*.12;
+  ring.style.left=rx+'px'; ring.style.top=ry+'px';
+  requestAnimationFrame(animRing);
+})();
+document.querySelectorAll('a,button,input,textarea,select').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{ cursor.style.width='18px'; cursor.style.height='18px'; ring.style.width='52px'; ring.style.height='52px'; });
+  el.addEventListener('mouseleave',()=>{ cursor.style.width='8px';  cursor.style.height='8px';  ring.style.width='32px'; ring.style.height='32px'; });
+});
+
+// NAV WORLD SWITCHING
+const nav      = document.getElementById('mainNav');
+const divider  = document.getElementById('world-divider');
+const mMenu    = document.getElementById('mobileMenu');
+const hamburger= document.getElementById('hamburger');
+
+function getWorld(){ return window.scrollY >= divider.offsetTop ? 'rewear' : 'practice'; }
+
+window.addEventListener('scroll', () => {
+  const w = getWorld();
+  nav.className = w === 'rewear' ? 'on-rewear' : 'on-practice';
+  document.body.className = w === 'rewear' ? 'world-rewear' : 'world-practice';
+  const sw = nav.querySelector('.nav-cta');
+  if(sw){ sw.textContent = w==='rewear' ? '↑ Practice' : 'Get in touch'; sw.href = w==='rewear' ? '#hero' : '#contact'; }
+});
+
+// MOBILE MENU
+function openMobileMenu(){
+  const w = getWorld();
+  mMenu.className = 'mobile-menu open ' + (w==='rewear' ? 'rewear-m' : 'practice-m');
+}
+function closeMobileMenu(){ mMenu.className = 'mobile-menu'; }
+
+// SCROLL REVEAL
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('vi
